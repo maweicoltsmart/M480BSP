@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>鸣驹智能</title>
+	<style>
+		body,
+		html {
+			background: #202123;
+			padding: 0;
+			margin: 0;
+			width: 100%;
+			height: 100%;
+		}
+
+		.form-item {
+			width: 100%;
+			margin: 20px 0;
+			/* width: 50%;
+			float: left; */
+		}
+
+		.form-item span {
+			display: inline-block;
+			margin-right: 5px;
+			font-family: PingFangSC-Medium;
+			font-size: 14px;
+			color: #666666;
+			letter-spacing: 0;
+			line-height: 14px;
+		}
+
+		.form-item select {
+			width: 130px;
+			height: 24px;
+			padding-left: 10px;
+			/* border: none; */
+			color: #000;
+			outline: none;
+			/*去掉默认的下拉三角*/
+			/* appearance: none; */
+			/* -moz-appearance: none; */
+			/* -webkit-appearance: none; */
+			/*添加下拉三角图标*/
+			/* background: url("../img/icon-more.png") no-repeat right center; */
+		}
+
+		.form-item input[type='text'] {
+			width: 190px;
+			height: 24px;
+			padding-left: 10px;
+			color: #000;
+			outline: none;
+		}
+
+		.content {
+			width: 100%;
+			/* height: 100%; */
+			/* box-sizing: border-box; */
+			max-width: 1200px;
+			margin: 0 auto;
+			position: relative;
+			padding-bottom: 90px;
+		}
+
+		.footer {
+			width: 100%;
+			height: 90px;
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			text-align: center;
+			font-size: 12px;
+			color: #E6E6E6;
+		}
+
+		.footer p {
+			line-height: 30px;
+		}
+
+		.footer a {
+			text-decoration: none;
+			color: #E6E6E6;
+		}
+
+		.nav-bar {
+			width: 100%;
+			height: 56px;
+			padding-top: 14px;
+
+		}
+
+		.nav-bar a {
+			display: block;
+			width: 202px;
+			height: 40px;
+			/* margin-top: 14px; */
+		}
+
+		.nav-bar a img {
+			width: 100%;
+		}
+
+		.model-item {
+			width: 100%;
+			box-sizing: border-box;
+			padding: 20px 30px;
+			background-color: #fff;
+			margin-bottom: 36px;
+			/* border-radius: 4px; */
+		}
+
+		.model-item .title-box {
+			width: 100%;
+			height: 20px;
+		}
+
+		.title-box .span1 {
+			display: inline-block;
+			width: 3px;
+			height: 20px;
+			background: #3487FF;
+			margin-right: 6px;
+			vertical-align: top;
+		}
+
+		.title-box .span2 {
+			display: inline-block;
+			height: 20px;
+			color: #3487FF;
+			font-size: 20px;
+			line-height: 20px;
+			font-weight: normal;
+			vertical-align: top;
+		}
+
+		.model-item .body-box {
+			width: 100%;
+		}
+
+		.model-item .fs-submit {
+			display: block;
+			width: 84px;
+			height: 26px;
+			background: #3487FF;
+			border-radius: 2px;
+			color: #fff;
+			outline: none;
+		}
+
+		.base-info-box {
+			width: 100%;
+			height: 160px;
+		}
+
+		.base-info-box p {
+			width: 50%;
+			float: left;
+			font-size: 14px;
+			color: #000;
+		}
+
+		.base-info-box p span {
+			font-size: 14px;
+			color: #666666;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="content">
+		<div class="nav-bar"><a href="http://www.coltsmart.com/"><img src="img/logo.png" alt="鸣驹智能"></a></div>
+		<div class="model-item base-info">
+			<div class="title-box">
+				<span class="span1"></span>
+				<span class="span2">基本信息</span>
+			</div>
+			<div class="body-box base-info-box">
+				<p>
+					<span>设备ID：</span>
+
+					<!--#devid-->
+				</p>
+				<p>
+					<span>MAC地址：</span>
+					<!--#devmac-->
+				</p>
+				<p>
+					<span>设备名称：</span>
+
+					<!--#devname-->
+				</p>
+				<p><span>软件版本：</span>
+
+					<!--#sversion-->
+				</p>
+				<p><span>硬件版本：</span>
+
+					<!--#hversion-->
+				</p>
+				<p><span>产品型号：</span>
+
+					<!--#devtype-->
+				</p>
+			</div>
+		</div>
+		<div class="model-item base-info">
+			<div class="title-box">
+				<span class="span1"></span>
+				<span class="span2">工作模式选择</span>
+			</div>
+			<form action="/modeset.cgi" method="POST">
+				<div class="form-item">
+					<span>请选择:</span>
+					<select name="workmode">
+						<option value="MJCloud">MJ Cloud</option>
+						<option value="TCPServer">TCP Server</option>
+						<option value="TCPClient" selected="selected">TCP Client</option>
+						<option value="UDP">UDP</option>
+						<option value="HTTPClient">HTTP Client</option>
+						<option value="VSPD">VSPD</option>
+					</select>
+				</div>
+				<input class="fs-submit" type="submit" value="提交修改">
+			</form>
+		</div>
+		<div class="model-item base-info">
+			<div class="title-box">
+				<span class="span1"></span>
+				<span class="span2">本机</span>
+			</div>
+			<form action="/localcfg.cgi" method="POST">
+				<div class="form-item">
+					<span>自动获取IP:</span>
+					<input type="checkbox" name="dhcp" value="1"><br>
+				</div>
+				<div class="form-item">
+					<span>本机地址:</span>
+					<input type="text" name="localip" value="192.168.1.100">
+				</div>
+				<div class="form-item">
+					<span>本机端口:</span>
+					<input type="text" name="localport" value="0"><br>
+				</div>
+				<div class="form-item">
+					<span>网关地址:</span>
+					<input type="text" name="gateway" value="192.168.1.1">
+				</div>
+				<div class="form-item">
+					<span>子网掩码:</span>
+					<input type="text" name="netmask" value="255.255.255.0"><br>
+				</div>
+				<div class="form-item">
+					<span>DNS地址:</span>
+					<input type="text" name="dns" value="114.114.114.114">
+				</div>
+
+				<input class="fs-submit" type="submit" value="提交修改">
+			</form>
+		</div>
+		<div class="model-item base-info">
+			<div class="title-box">
+				<span class="span1"></span>
+				<span class="span2">远端主机</span>
+			</div>
+			<form action="/remotecfg.cgi" method="POST">
+				<div class="form-item">
+					<span>目标地址:</span>
+					<input type="text" name="destip" value="47.101.57.10">
+				</div>
+				<div class="form-item">
+					<span>目标端口:</span>
+					<input type="text" name="destport" value="5001">
+				</div>
+				<input class="fs-submit" type="submit" value="提交修改">
+			</form>
+		</div>
+		<div class="model-item base-info">
+			<div class="title-box">
+				<span class="span1"></span>
+				<span class="span2">本机串口</span>
+			</div>
+			<form action="/comcfg.cgi" method="POST">
+				<div class="form-item">
+					<span>波特率:</span>
+					<select name="baud">
+						<option value="2400">2400</option>
+						<option value="4800">4800</option>
+						<option value="9600">9600</option>
+						<option value="57600">57600</option>
+						<option value="115200" selected="selected">115200</option>
+					</select>
+				</div>
+				<div class="form-item">
+					<span>数据位:</span>
+					<select name="databit">
+						<option value="7">7</option>
+						<option value="8" selected="selected">8</option>
+						<option value="9">9</option>
+					</select>
+				</div>
+				<div class="form-item">
+					<span>停止位:</span>
+					<select name="stopbit">
+						<option value="1" selected="selected">1位</option>
+						<option value="1.5">1.5位</option>
+						<option value="2">2位</option>
+					</select> </div>
+				<div class="form-item">
+					<span>校验位:</span>
+					<select name="parity">
+						<option value="None" selected="selected">None</option>
+						<option value="Odd">Odd</option>
+						<option value="Even">Even</option>
+						<option value="Mark">Mark</option>
+						<option value="Space">Space</option>
+					</select> </div>
+				<div class="form-item">
+					<span>流控制:</span>
+					<select name="flowctrl">
+						<option value="None" selected="selected">None</option>
+						<option value="Hardware">Hardware</option>
+						<option value="XonXoff">Xon/Xoff</option>
+					</select> </div>
+
+
+				<input class="fs-submit" type="submit" value="提交修改">
+			</form>
+		</div>
+		<div class="model-item base-info">
+			<div class="title-box">
+				<span class="span1"></span>
+				<span class="span2">信息统计</span>
+			</div>
+			<div class="body-box base-info-box">
+				<p>
+					<span>发送字节统计：</span>
+					<!--#txcnt-->Bytes
+				</p>
+				<p>
+					<span>接收字节统计：</span>
+					<!--#rxcnt-->Bytes
+				</p>
+				<p>
+					<span>持续工作时间：</span>
+					<!--#worktime-->Seconds
+				</p>
+				<p>
+					<span>未分配的内存堆历史最小值：</span>
+					<!--#freeheap--> Bytes
+				</p>
+				<p>
+					<span>NetLED TASK：</span>
+					<!--#netled--> Words
+				</p>
+				<p>
+					<span>Eth_if TASK：</span>
+					<!--#ethif--> Words
+				</p>
+				<p>
+					<span>IDLE TASK：</span>
+					<!--#idle--> Words
+				</p>
+				<p>
+					<span>networkmain TASK：</span>
+					<!--#network--> Words
+				</p>
+				<p>
+					<span>lwIP TASK：</span>
+					<!--#lwip--> Words
+				</p>
+				<p>
+					<span>Tmr Svc TASK：</span>
+					<!--#tmrsvc--> Words
+				</p>
+			</div>
+		</div>
+		<div class="footer">
+			<p> Copyright © Shang Hai Colt Smart Technology Limited. All Rights Reserved<br>
+				官方网站:<a href="http://www.coltsmart.com/">www.coltsmart.com</a>
+			</p>
+		</div>
+
+	</div>
+</body>
+
+</html>

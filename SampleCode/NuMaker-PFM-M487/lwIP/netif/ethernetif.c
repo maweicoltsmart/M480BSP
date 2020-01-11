@@ -100,7 +100,7 @@ low_level_init(struct netif *netif)
     netif->hwaddr[5] = my_mac_addr[5];
 
     /* maximum transfer unit */
-    netif->mtu = 1500;
+    netif->mtu = TCP_MSS + 40;
 
     /* device capabilities */
     netif->flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP | NETIF_FLAG_LINK_UP;
@@ -319,6 +319,7 @@ ethernetif_loopback_input(struct pbuf *p)           // TODO: make sure packet no
  *         ERR_MEM if private data couldn't be allocated
  *         any other err_t on error
  */
+#define LINK_SPEED_OF_YOUR_NETIF_IN_BPS                 100000000000
 err_t
 ethernetif_init(struct netif *netif)
 {

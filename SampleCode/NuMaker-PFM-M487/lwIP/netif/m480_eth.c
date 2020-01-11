@@ -221,7 +221,7 @@ void ETH_init(u8_t *mac_addr)
                    EMAC_INTEN_TXCPIEN_Msk |
                    EMAC_INTEN_TXBEIEN_Msk;
     /* Limit the max receive frame length to 1514 + 4 */
-    EMAC->MRFL = 1518;
+    EMAC->MRFL = PACKET_BUFFER_SIZE;
     EMAC->RXST = 0;  // trigger Rx
 }
 

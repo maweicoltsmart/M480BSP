@@ -64,7 +64,9 @@
 #include "netif/ethernetif.h"
 #include "lwip/dhcp.h"
 #include "tcp_echoserver-netconn.h"
-
+#include "cm_backtrace.h"
+#include "pragma.h"
+#include "networktask.h"
 /* Priorities for the demo application tasks. */
 #if 0
 #define mainFLASH_TASK_PRIORITY            ( tskIDLE_PRIORITY + 1UL )
@@ -107,7 +109,7 @@ the documentation page on the http://www.FreeRTOS.org web site for more
 information. */
 #define mainCREATE_SIMPLE_LED_FLASHER_DEMO_ONLY        0
 
-//#define USE_DHCP
+#define USE_DHCP
 
 #ifdef USE_DHCP
 #include "lwip/dhcp.h"
@@ -122,21 +124,19 @@ static void prvSetupHardware( void );
 
 
 unsigned char my_mac_addr[6] = {0x00, 0x00, 0x00, 0x55, 0x66, 0x77};
-struct netif netif;
+struct netif xnetif;
 static void vTcpTask( void *pvParameters );
 
 int main(void)
 {
     /* Configure the hardware ready to run the test. */
     prvSetupHardware();
-
+    cm_backtrace_init("CmBacktrace", HARDWARE_VERSION, SOFTWARE_VERSION);
+    printf("power on\r\n");
+    getdevinfo();
+    getworkpragma();
+    //net_work_task_init();
     xTaskCreate( vTcpTask, "TcpTask", TCPIP_THREAD_STACKSIZE, NULL, mainCHECK_TASK_PRIORITY, NULL );
-
-    //vStartBlockingQueueTasks( mainBLOCK_Q_PRIORITY );
-    vStartPolledQueueTasks( mainQUEUE_POLL_PRIORITY );
-    vStartSemaphoreTasks( mainSEM_TEST_PRIORITY );
-    vStartGenericQueueTasks( tskIDLE_PRIORITY );
-    vStartQueueSetTasks();
 
 
     printf("FreeRTOS is starting ...\n");
@@ -236,6 +236,7 @@ void vApplicationMallocFailedHook( void )
     FreeRTOSConfig.h, and the xPortGetFreeHeapSize() API function can be used
     to query the size of free heap space that remains (although it does not
     provide information on how the remaining heap might be fragmented). */
+    printf("vApplicationMallocFailedHook\r\n");
     taskDISABLE_INTERRUPTS();
     for( ;; );
 }
@@ -263,6 +264,7 @@ void vApplicationStackOverflowHook( xTaskHandle pxTask, signed char *pcTaskName 
     /* Run time stack overflow checking is performed if
     configCHECK_FOR_STACK_OVERFLOW is defined to 1 or 2.  This hook
     function is called if a stack overflow is detected. */
+    printf("%s vApplicationStackOverflowHook\r\n", pcTaskName);
     taskDISABLE_INTERRUPTS();
     for( ;; );
 }
@@ -275,13 +277,6 @@ void vApplicationTickHook( void )
     added here, but the tick hook is called from an interrupt context, so
     code must not attempt to block, and only the interrupt safe FreeRTOS API
     functions can be used (those that end in FromISR()).  */
-
-#if ( mainCREATE_SIMPLE_BLINKY_DEMO_ONLY == 0 )
-    {
-        /* In this case the tick hook is used as part of the queue set test. */
-        vQueueSetAccessQueueSetFromISR();
-    }
-#endif /* mainCREATE_SIMPLE_BLINKY_DEMO_ONLY */
 }
 
 static void vTcpTask( void *pvParameters )
@@ -295,46 +290,48 @@ static void vTcpTask( void *pvParameters )
     IP4_ADDR(&ipaddr, 192,168,1,209);
     IP4_ADDR(&netmask, 255,255,255,0);
     
-    printf("Local IP:192.168.1.207\n");
-
     tcpip_init(NULL, NULL);
-
-    netif_add(&netif, &ipaddr, &netmask, &gw, NULL, ethernetif_init, tcpip_input);
-
-    netif_set_default(&netif);
-    netif_set_up(&netif);
-    
-
+    LOCK_TCPIP_CORE();
+    netif_add(&xnetif, &ipaddr, &netmask, &gw, NULL, ethernetif_init, tcpip_input);
+    netif_set_default(&xnetif);
+    netif_set_up(&xnetif);
+    UNLOCK_TCPIP_CORE();
+    LOCK_TCPIP_CORE();
+    httpd_init();
+    ssi_ex_init();
+    cgi_ex_init();
+    UNLOCK_TCPIP_CORE();
 #ifdef USE_DHCP
-    dhcp_start(&netif);
+    LOCK_TCPIP_CORE();
+    dhcp_start(&xnetif);
+    UNLOCK_TCPIP_CORE();
 #endif
-
     NVIC_SetPriority(EMAC_TX_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1);
     NVIC_EnableIRQ(EMAC_TX_IRQn);
     NVIC_SetPriority(EMAC_RX_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1);
     NVIC_EnableIRQ(EMAC_RX_IRQn);
 
-    /*while (!netif_is_link_up(&netif))
+    while (!netif_is_link_up(&xnetif))
     {
         //WWDG_SetCounter(1);
         vTaskDelay(pdMS_TO_TICKS(10));
     }
-    //LOCK_TCPIP_CORE();
-    dhcp_stop(&netif);
-    dhcp_start(&netif);
-    //UNLOCK_TCPIP_CORE();
-    while (dhcp_supplied_address(&netif) == 0)
+    LOCK_TCPIP_CORE();
+    dhcp_stop(&xnetif);
+    dhcp_start(&xnetif);
+    UNLOCK_TCPIP_CORE();
+    while (dhcp_supplied_address(&xnetif) == 0)
     {
         //WWDG_SetCounter(1);
         vTaskDelay(pdMS_TO_TICKS(10));
     }
 
-    dhcp = netif_dhcp_data(&netif);
+    dhcp = netif_dhcp_data(&xnetif);
     printf("IP address: %s\n", ip4addr_ntoa(&dhcp->offered_ip_addr));
     printf("Subnet mask: %s\n", ip4addr_ntoa(&dhcp->offered_sn_mask));
     printf("Default gateway: %s\n", ip4addr_ntoa(&dhcp->offered_gw_addr));
     printf("task cnt = %d\r\n", uxTaskGetNumberOfTasks());
-    */
+    
     tcp_echoserver_netconn_init();
 
     vTaskSuspend( NULL );

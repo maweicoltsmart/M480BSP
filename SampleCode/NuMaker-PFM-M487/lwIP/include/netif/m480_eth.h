@@ -70,7 +70,15 @@
 #define RX_DESCRIPTOR_NUM 4    // Max Number of Rx Frame Descriptors
 #define TX_DESCRIPTOR_NUM 4    // Max number of Tx Frame Descriptors
 
-#define PACKET_BUFFER_SIZE  1520
+#define ETH_MAX_PACKET_SIZE    (ETH_HEADER + ETH_EXTRA + VLAN_TAG + MAX_ETH_PAYLOAD + ETH_CRC)//1524    /*!< ETH_HEADER + ETH_EXTRA + VLAN_TAG + MAX_ETH_PAYLOAD + ETH_CRC */
+#define ETH_HEADER               14    /*!< 6 byte Dest addr, 6 byte Src addr, 2 byte length/type */
+#define ETH_CRC                   4    /*!< Ethernet CRC */
+#define ETH_EXTRA                 2    /*!< Extra bytes in some cases */   
+#define VLAN_TAG                  4    /*!< optional 802.1q VLAN Tag */
+#define MIN_ETH_PAYLOAD          46    /*!< Minimum Ethernet payload size */
+#define MAX_ETH_PAYLOAD        (TCP_MSS + 40)    /*!< Maximum Ethernet payload size */
+#define JUMBO_FRAME_PAYLOAD    9000    /*!< Jumbo frame payload size */      
+#define PACKET_BUFFER_SIZE  (ETH_HEADER + ETH_EXTRA + VLAN_TAG + MAX_ETH_PAYLOAD + ETH_CRC)
 
 #define CONFIG_PHY_ADDR     1
 

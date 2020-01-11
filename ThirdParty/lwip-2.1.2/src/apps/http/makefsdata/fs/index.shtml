@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>鸣驹智能</title>
+	<style>
+		* {
+			padding: 0;
+			margin: 0;
+		}
+
+		html,
+		body {
+			width: 100%;
+			height: 100%;
+			background: #202123;
+
+		}
+
+		.content {
+			width: 100%;
+			height: 100%;
+			box-sizing: border-box;
+			margin: 0 auto;
+			overflow: scroll;
+		}
+
+		.content-inner {
+			width: 100%;
+			min-height: 100%;
+			box-sizing: border-box;
+			max-width: 1200px;
+			margin: 0 auto;
+			position: relative;
+			padding-bottom: 90px;
+		}
+
+		/* nav */
+		.nav-bar {
+			width: 100%;
+			height: 56px;
+			padding-top: 14px;
+		}
+
+		.nav-bar a {
+			display: block;
+			width: 202px;
+			height: 40px;
+		}
+
+		.nav-bar a img {
+			width: 100%;
+		}
+
+		/* body */
+		.login-box {
+			width: 800px;
+			height: 506px;
+			margin: 0 auto;
+			margin-top: 50px;
+			margin-bottom: 20px;
+			background-color: #fff;
+		}
+
+		.login-title {
+			width: 100%;
+			height: 136px;
+			text-align: center;
+			line-height: 136px;
+			font-size: 32px;
+			color: #000000;
+		}
+
+		.login-form {
+			width: 100%;
+			height: 308px;
+			box-sizing: border-box;
+			padding: 0 170px;
+		}
+
+		.fitem {
+			width: 100%;
+			height: 56px;
+			box-sizing: border-box;
+			padding-left: 50px;
+			border-radius: 2px;
+			border: 1px solid #ccc;
+		}
+
+		.form-user {
+			background: url('img/icon_user.png');
+			background-position: 15px 15px;
+			background-repeat: no-repeat;
+			background-size: 22px 22px;
+			margin-bottom: 30px;
+		}
+
+		.form-password {
+			background: url('img/icon_password.png');
+			background-position: 15px 15px;
+			background-repeat: no-repeat;
+			background-size: 22px 22px;
+			margin-bottom: 45px;
+		}
+
+		.form-btn {
+			width: 100%;
+			height: 56px;
+		}
+
+		.form-btn input {
+			width: 100%;
+			height: 56px;
+			background: #3487FF;
+			border-radius: 2px;
+			color: #fff;
+			text-align: center;
+			font-size: 26px;
+			letter-spacing: 0;
+		}
+
+		.fitem input {
+			width: 100%;
+			height: 54px;
+			border: none;
+			color: #ccc;
+			outline: none;
+			font-size: 18px;
+		}
+
+		.login-tip {
+			width: 100%;
+			box-sizing: border-box;
+			padding: 0 20px;
+			height: 60px;
+			background: #EFEFEF;
+		}
+
+		.login-tip p {
+			float: left;
+			height: 60px;
+			font-size: 14px;
+			color: #6F6F6F;
+			line-height: 60px;
+			width: 33%;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+
+
+		/* foot */
+		.footer {
+			width: 100%;
+			height: 90px;
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			text-align: center;
+			font-size: 12px;
+			color: #fff;
+		}
+
+		.footer p {
+			line-height: 30px;
+
+		}
+
+		.footer a {
+			text-decoration: none;
+			color: #fff;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="content">
+		<div class="content-inner">
+			<div class="nav-bar"><a href="http://www.coltsmart.com/"><img src="img/logo.png" alt="鸣驹智能"></a></div>
+			<div class="login-box">
+				<div class="login-title">登录</div>
+				<form class="login-form" action="/login.cgi" method="POST">
+					<div class="fitem form-user"><input type="text" name="user" value="admin">
+					</div>
+					<div class="fitem form-password">
+						<input type="password" name="pass" value="admin">
+					</div>
+					<div class="form-btn"><input type="submit" value="登录"></div>
+				</form>
+				<div class="login-tip">
+					<p>软件版本：
+						<!--#sversion-->
+					</p>
+					<p>硬件版本：
+						<!--#hversion-->
+					</p>
+					<p>产品型号：
+						<!--#devtype-->
+					</p>
+				</div>
+
+			</div>
+			<div class="footer">
+				<p> Copyright © Shang Hai Colt Smart Technology Limited. All Rights Reserved<br>
+					官方网站:<a href="http://www.coltsmart.com/">www.coltsmart.com</a>
+				</p>
+			</div>
+		</div>
+
+	</div>
+
+
+
+</body>
+
+</html>
