@@ -62,6 +62,7 @@
 #include "lwip/netifapi.h"
 #include "lwip/tcpip.h"
 #include "netif/ethernetif.h"
+#include "lwip/dhcp.h"
 #include "tcp_echoserver-netconn.h"
 
 /* Priorities for the demo application tasks. */
@@ -154,6 +155,7 @@ int main(void)
 
 static void prvSetupHardware( void )
 {
+    uint32_t res = 0;
     /* Unlock protected registers */
     SYS_UnlockReg();
 
@@ -164,8 +166,8 @@ static void prvSetupHardware( void )
     CLK_EnableXtalRC(CLK_PWRCTL_HXTEN_Msk);
 
     /* Waiting for 12MHz clock ready */
-    CLK_WaitClockReady( CLK_STATUS_HXTSTB_Msk);
-
+    res = CLK_WaitClockReady( CLK_STATUS_HXTSTB_Msk);
+    printf("extern xstall res = %d\r\n", res);
     /* Set core clock as PLL_CLOCK from PLL */
     CLK_SetCoreClock(FREQ_192MHZ);
 
@@ -190,19 +192,28 @@ static void prvSetupHardware( void )
     SYS->GPB_MFPH &= ~(SYS_GPB_MFPH_PB12MFP_Msk | SYS_GPB_MFPH_PB13MFP_Msk);
     SYS->GPB_MFPH |= (SYS_GPB_MFPH_PB12MFP_UART0_RXD | SYS_GPB_MFPH_PB13MFP_UART0_TXD);
     // Configure RMII pins
-    SYS->GPA_MFPL |= SYS_GPA_MFPL_PA6MFP_EMAC_RMII_RXERR | SYS_GPA_MFPL_PA7MFP_EMAC_RMII_CRSDV;
+    /*SYS->GPA_MFPL |= SYS_GPA_MFPL_PA6MFP_EMAC_RMII_RXERR | SYS_GPA_MFPL_PA7MFP_EMAC_RMII_CRSDV;
     SYS->GPC_MFPL |= SYS_GPC_MFPL_PC6MFP_EMAC_RMII_RXD1 | SYS_GPC_MFPL_PC7MFP_EMAC_RMII_RXD0;
     SYS->GPC_MFPH |= SYS_GPC_MFPH_PC8MFP_EMAC_RMII_REFCLK;
     SYS->GPE_MFPH |= SYS_GPE_MFPH_PE8MFP_EMAC_RMII_MDC |
                      SYS_GPE_MFPH_PE9MFP_EMAC_RMII_MDIO |
                      SYS_GPE_MFPH_PE10MFP_EMAC_RMII_TXD0 |
                      SYS_GPE_MFPH_PE11MFP_EMAC_RMII_TXD1 |
-                     SYS_GPE_MFPH_PE12MFP_EMAC_RMII_TXEN;
+                     SYS_GPE_MFPH_PE12MFP_EMAC_RMII_TXEN;*/
+    SYS->GPB_MFPL |= SYS_GPB_MFPL_PB7MFP_EMAC_RMII_TXEN | SYS_GPB_MFPL_PB6MFP_EMAC_PPS |
+                     SYS_GPB_MFPL_PB5MFP_EMAC_RMII_REFCLK | SYS_GPB_MFPL_PB4MFP_EMAC_RMII_RXD0 |
+                     SYS_GPB_MFPL_PB3MFP_EMAC_RMII_RXD1 | SYS_GPB_MFPL_PB2MFP_EMAC_RMII_CRSDV |
+                     SYS_GPB_MFPL_PB1MFP_EMAC_RMII_RXERR;
+    SYS->GPB_MFPH |= SYS_GPB_MFPH_PB8MFP_EMAC_RMII_TXD1 | SYS_GPB_MFPH_PB9MFP_EMAC_RMII_TXD0 |
+                     SYS_GPB_MFPH_PB10MFP_EMAC_RMII_MDIO | SYS_GPB_MFPH_PB11MFP_EMAC_RMII_MDC;
 
     // Enable high slew rate on all RMII TX output pins
-    PE->SLEWCTL = (GPIO_SLEWCTL_HIGH << GPIO_SLEWCTL_HSREN10_Pos) |
+    /*PE->SLEWCTL = (GPIO_SLEWCTL_HIGH << GPIO_SLEWCTL_HSREN10_Pos) |
                   (GPIO_SLEWCTL_HIGH << GPIO_SLEWCTL_HSREN11_Pos) |
-                  (GPIO_SLEWCTL_HIGH << GPIO_SLEWCTL_HSREN12_Pos);
+                  (GPIO_SLEWCTL_HIGH << GPIO_SLEWCTL_HSREN12_Pos);*/
+    PB->SLEWCTL = (GPIO_SLEWCTL_HIGH << GPIO_SLEWCTL_HSREN7_Pos) |
+                  (GPIO_SLEWCTL_HIGH << GPIO_SLEWCTL_HSREN8_Pos) |
+                  (GPIO_SLEWCTL_HIGH << GPIO_SLEWCTL_HSREN9_Pos);
 
     /* Lock protected registers */
     SYS_LockReg();
@@ -278,12 +289,13 @@ static void vTcpTask( void *pvParameters )
     ip_addr_t ipaddr;
     ip_addr_t netmask;
     ip_addr_t gw;
-
-    IP4_ADDR(&gw, 192,168,0,1);
-    IP4_ADDR(&ipaddr, 192,168,0,2);
+    struct dhcp *dhcp;
+    
+    IP4_ADDR(&gw, 192,168,1,1);
+    IP4_ADDR(&ipaddr, 192,168,1,209);
     IP4_ADDR(&netmask, 255,255,255,0);
-
-    printf("Local IP:192.168.0.2\n");
+    
+    printf("Local IP:192.168.1.207\n");
 
     tcpip_init(NULL, NULL);
 
@@ -291,6 +303,7 @@ static void vTcpTask( void *pvParameters )
 
     netif_set_default(&netif);
     netif_set_up(&netif);
+    
 
 #ifdef USE_DHCP
     dhcp_start(&netif);
@@ -301,6 +314,27 @@ static void vTcpTask( void *pvParameters )
     NVIC_SetPriority(EMAC_RX_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1);
     NVIC_EnableIRQ(EMAC_RX_IRQn);
 
+    /*while (!netif_is_link_up(&netif))
+    {
+        //WWDG_SetCounter(1);
+        vTaskDelay(pdMS_TO_TICKS(10));
+    }
+    //LOCK_TCPIP_CORE();
+    dhcp_stop(&netif);
+    dhcp_start(&netif);
+    //UNLOCK_TCPIP_CORE();
+    while (dhcp_supplied_address(&netif) == 0)
+    {
+        //WWDG_SetCounter(1);
+        vTaskDelay(pdMS_TO_TICKS(10));
+    }
+
+    dhcp = netif_dhcp_data(&netif);
+    printf("IP address: %s\n", ip4addr_ntoa(&dhcp->offered_ip_addr));
+    printf("Subnet mask: %s\n", ip4addr_ntoa(&dhcp->offered_sn_mask));
+    printf("Default gateway: %s\n", ip4addr_ntoa(&dhcp->offered_gw_addr));
+    printf("task cnt = %d\r\n", uxTaskGetNumberOfTasks());
+    */
     tcp_echoserver_netconn_init();
 
     vTaskSuspend( NULL );

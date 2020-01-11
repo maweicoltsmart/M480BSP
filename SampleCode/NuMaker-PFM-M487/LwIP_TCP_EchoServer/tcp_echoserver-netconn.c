@@ -80,7 +80,7 @@ static void tcp_echoserver_netconn_thread(void *arg)
     if (conn!= NULL)
     {
         /* Bind to port 80 (HTTP) with default IP address */
-        err = netconn_bind(conn, NULL, 80);
+        err = netconn_bind(conn, NULL, 5001);
 
         if (err == ERR_OK)
         {
