@@ -78,6 +78,9 @@ static void net_work_task_thread(void *arg)
     timeout.tv_sec = 0;
     timeout.tv_usec = 1000;
     tcpclient_list_init();
+    ipaddr.addr = 0;
+    netmask.addr = 0;
+    gw.addr = 0;
     tcpip_init(NULL, NULL);
     LOCK_TCPIP_CORE();
     netif_add(&xnetif, &ipaddr, &netmask, &gw, NULL, ethernetif_init, tcpip_input);
@@ -97,13 +100,14 @@ static void net_work_task_thread(void *arg)
         vTaskDelay(pdMS_TO_TICKS(10));
     }
     LOCK_TCPIP_CORE();
-    dhcp_stop(&xnetif);
+    //dhcp_stop(&xnetif);
     dhcp_start(&xnetif);
     UNLOCK_TCPIP_CORE();
     while (dhcp_supplied_address(&xnetif) == 0)
     {
         //WWDG_SetCounter(1);
         vTaskDelay(pdMS_TO_TICKS(10));
+        //printf("%s, %d\r\n", __func__, __LINE__);
     }
 
     dhcp = netif_dhcp_data(&xnetif);

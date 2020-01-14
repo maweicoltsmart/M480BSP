@@ -135,8 +135,8 @@ int main(void)
     printf("power on\r\n");
     getdevinfo();
     getworkpragma();
-    //net_work_task_init();
-    xTaskCreate( vTcpTask, "TcpTask", TCPIP_THREAD_STACKSIZE, NULL, mainCHECK_TASK_PRIORITY, NULL );
+    net_work_task_init();
+    //xTaskCreate( vTcpTask, "TcpTask", TCPIP_THREAD_STACKSIZE, NULL, mainCHECK_TASK_PRIORITY, NULL );
 
 
     printf("FreeRTOS is starting ...\n");
@@ -278,7 +278,7 @@ void vApplicationTickHook( void )
     code must not attempt to block, and only the interrupt safe FreeRTOS API
     functions can be used (those that end in FromISR()).  */
 }
-
+#if 0
 static void vTcpTask( void *pvParameters )
 {
     ip_addr_t ipaddr;
@@ -337,3 +337,4 @@ static void vTcpTask( void *pvParameters )
     vTaskSuspend( NULL );
 
 }
+#endif

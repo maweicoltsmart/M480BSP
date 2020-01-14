@@ -40,12 +40,13 @@
 /*
 #define LWIP_UDPLITE                    1
 */
+#define LWIP_NETIF_HOSTNAME             1
 extern int32_t rand1( void );
 #define LWIP_RAND                       xTaskGetTickCount
 
 /* tcpip_thread should run on HIGH priority */
 #define TCPIP_THREAD_NAME              "lwIP"
-#define TCPIP_THREAD_STACKSIZE         (1024 * 1 - 95)
+#define TCPIP_THREAD_STACKSIZE         (256)
 #define TCPIP_THREAD_PRIO              (configMAX_PRIORITIES - 2)
 
 
@@ -163,7 +164,7 @@ extern int32_t rand1( void );
 
 /* MEM_SIZE: the size of the heap memory. If the application will send
 a lot of data that needs to be copied, this should be set high. */
-#define MEM_SIZE               (20 * 1024)
+#define MEM_SIZE               (30 * 1024)
 //#define MEM_USE_POOLS                   1
 //#define MEM_USE_POOLS_TRY_BIGGER_POOL   1
 //#define MEMP_USE_CUSTOM_POOLS           1
@@ -205,7 +206,7 @@ a lot of data that needs to be copied, this should be set high. */
 
 /* ---------- Pbuf options ---------- */
 /* PBUF_POOL_SIZE: the number of buffers in the pbuf pool. */
-#define PBUF_POOL_SIZE          (100)
+#define PBUF_POOL_SIZE          (60)
 
 /* PBUF_POOL_BUFSIZE: the size of each pbuf in the pbuf pool. */
 #define PBUF_POOL_BUFSIZE       256
@@ -222,8 +223,8 @@ a lot of data that needs to be copied, this should be set high. */
 #define LWIP_TCP                1
 #define TCP_TTL                 255
 #define LWIP_TCP_KEEPALIVE      LWIP_TCP
-#define  TCP_KEEPIDLE_DEFAULT     5000UL       // 5秒内连接双方都无数据，则发起保活探测（该值默认为2小时）
-#define  TCP_KEEPINTVL_DEFAULT    1000UL         // 每1秒发送一次保活探测
+#define  TCP_KEEPIDLE_DEFAULT     5UL       // 5秒内连接双方都无数据，则发起保活探测（该值默认为2小时）
+#define  TCP_KEEPINTVL_DEFAULT    1UL         // 每1秒发送一次保活探测
 //保活机制启动后，一共发送5次保活探测包，如果这5个包对方均无回应，则表示连接异常，内核关闭连接，并发送err回调到用户程序
 #define  TCP_KEEPCNT_DEFAULT      2UL               
 #define  TCP_MAXIDLE  TCP_KEEPCNT_DEFAULT * TCP_KEEPINTVL_DEFAULT
@@ -249,7 +250,7 @@ a lot of data that needs to be copied, this should be set high. */
 #define TCP_SNDLOWAT                    LWIP_MIN(LWIP_MAX(((TCP_SND_BUF)/2), (2 * TCP_MSS) + 1), (TCP_SND_BUF) - 1)
 #define TCP_SNDQUEUELOWAT               LWIP_MAX(((TCP_SND_QUEUELEN)/2), 5)
 /* TCP receive window. */
-#define TCP_WND                 (TCP_MSS * 2)
+#define TCP_WND                 (TCP_MSS * 6)
 
 /* Maximum number of retransmissions of data segments. */
 #define TCP_MAXRTX              12

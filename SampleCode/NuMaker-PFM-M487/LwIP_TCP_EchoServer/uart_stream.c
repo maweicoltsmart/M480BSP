@@ -39,7 +39,7 @@ void uart_stream_create( void )
     }
     if(!xStreamBufferUartTx)
     {
-      xStreamBufferUartTx = xStreamBufferCreate( 1024 * 3 + 512 + 64 - 256, xTriggerLevel );
+      xStreamBufferUartTx = xStreamBufferCreate( 1024 * 10, xTriggerLevel );
 
       if( xStreamBufferUartTx == NULL )
       {

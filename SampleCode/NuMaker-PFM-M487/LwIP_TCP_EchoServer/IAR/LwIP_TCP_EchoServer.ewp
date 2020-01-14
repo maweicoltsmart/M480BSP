@@ -1865,12 +1865,18 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\tcpclient.c</name>
+            <excluded>
+                <configuration>Release</configuration>
+            </excluded>
         </file>
         <file>
             <name>$PROJ_DIR$\..\tcpclient.h</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\tcpserver.c</name>
+            <excluded>
+                <configuration>Release</configuration>
+            </excluded>
         </file>
         <file>
             <name>$PROJ_DIR$\..\tcpserver.h</name>

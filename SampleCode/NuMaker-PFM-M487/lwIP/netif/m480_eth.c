@@ -223,6 +223,10 @@ void ETH_init(u8_t *mac_addr)
     /* Limit the max receive frame length to 1514 + 4 */
     EMAC->MRFL = PACKET_BUFFER_SIZE;
     EMAC->RXST = 0;  // trigger Rx
+    NVIC_SetPriority(EMAC_TX_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1);
+    NVIC_EnableIRQ(EMAC_TX_IRQn);
+    NVIC_SetPriority(EMAC_RX_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY + 1);
+    NVIC_EnableIRQ(EMAC_RX_IRQn);
 }
 
 
