@@ -3,7 +3,7 @@
 
 #define NET_WORK_TASK_TEMP_BUFSIZE                      (512 * 1)
 #define NET_WORK_TASK_THREAD_PRIO                       (TCPIP_THREAD_PRIO - 1)
-#define NET_WORK_TASK_STK_SIZE                          (256)
+#define NET_WORK_TASK_STK_SIZE                          (256 + 64)
 
 extern unsigned char temp_buffer[NET_WORK_TASK_TEMP_BUFSIZE];
 

@@ -175,11 +175,13 @@ static void prvSetupHardware( void )
     CLK->PCLKDIV = CLK_PCLKDIV_APB0DIV_DIV2 | CLK_PCLKDIV_APB1DIV_DIV2;
 
     /* Enable IP clock */
+    CLK_EnableModuleClock(TMR0_MODULE);
     CLK_EnableModuleClock(UART0_MODULE);
     CLK_EnableModuleClock(EMAC_MODULE);
 
     /* Select IP clock source */
     CLK_SetModuleClock(UART0_MODULE, CLK_CLKSEL1_UART0SEL_HXT, CLK_CLKDIV0_UART0(1));
+    CLK_SetModuleClock(TMR0_MODULE, CLK_CLKSEL1_TMR0SEL_HXT, 0);
 
     // Configure MDC clock rate to HCLK / (127 + 1) = 1.5 MHz if system is running at 192 MHz
     CLK_SetModuleClock(EMAC_MODULE, 0, CLK_CLKDIV3_EMAC(127));
@@ -220,6 +222,22 @@ static void prvSetupHardware( void )
 
     /* Init UART to 115200-8n1 for print message */
     UART_Open(UART0, 115200);
+    //UART_SetTimeoutCnt(UART0, 0x10); // Set Rx Time-out counter
+
+    // Set RX FIFO Interrupt Trigger Level
+    UART0->FIFO &= ~ UART_FIFO_RFITL_Msk;
+    UART0->FIFO |= UART_FIFO_RFITL_1BYTE;
+    NVIC_SetPriority(UART0_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY);
+    /* Enable UART RDA/THRE/Time-out interrupt */
+    NVIC_EnableIRQ(UART0_IRQn);
+    //UART_EnableInt(UART0, (UART_INTEN_RDAIEN_Msk | UART_INTEN_THREIEN_Msk | UART_INTEN_RXTOIEN_Msk));
+    
+    /* Open Timer0 in periodic mode, enable interrupt and 10000 interrupt tick per second */
+    TIMER_Open(TIMER0, TIMER_PERIODIC_MODE, 10000);
+    TIMER_EnableInt(TIMER0);
+    NVIC_EnableIRQ(TMR0_IRQn);
+    TIMER_Start(TIMER0);
+    flash_driver_init();
 }
 
 /*-----------------------------------------------------------*/

@@ -6,11 +6,14 @@
 #include "lwip/ip4_addr.h"
 #include "FreeRTOS.h"
 
+#define DATA_FLASH_BASE        0x70000      /* Data Flash test start address            */
+#define DATA_FLASH_END         0x80000      /* Data Flash test end address              */
+
 /* Data Flash block and address */
-#define PRAGMA_DATA_FLASH_BLOCK_0                       (0 * 512)
-#define PRAGMA_DATA_FLASH_BLOCK_1                       (1 * 512)
-#define PRAGMA_DATA_FLASH_BLOCK_2                       (2 * 512)
-#define PRAGMA_DATA_FLASH_BLOCK_2                       (2 * 512)
+#define PRAGMA_DATA_FLASH_BLOCK_0                       (DATA_FLASH_BASE + 0 * FMC_FLASH_PAGE_SIZE)
+#define PRAGMA_DATA_FLASH_BLOCK_1                       (DATA_FLASH_BASE + 1 * FMC_FLASH_PAGE_SIZE)
+#define PRAGMA_DATA_FLASH_BLOCK_2                       (DATA_FLASH_BASE + 2 * FMC_FLASH_PAGE_SIZE)
+#define PRAGMA_DATA_FLASH_BLOCK_3                       (DATA_FLASH_BASE + 3 * FMC_FLASH_PAGE_SIZE)
 
 #define MODULE_WORK_MODE_MJ_CLOUD                       (0U)
 #define MODULE_WORK_MODE_TCP_SERVER                     (1U)
@@ -124,5 +127,5 @@ extern void getdevinfo(void);
 extern void factoryresetworkpragma(void);
 extern void getworkpragma(void);
 extern void restoreworkpragma(void);
-
+extern void flash_driver_init(void);
 #endif

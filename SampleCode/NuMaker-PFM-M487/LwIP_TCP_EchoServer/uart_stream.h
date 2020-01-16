@@ -3,7 +3,7 @@
 #include "stream_buffer.h"
 #include "semphr.h"
 
-#define MAX_UART_RECV_LIST_ITEM                                         10
+#define MAX_UART_RECV_LIST_ITEM                                         50
 
 /* The definition of the frame tx & rx list. */
 struct uartrecvlistitem
